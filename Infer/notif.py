@@ -16,9 +16,13 @@ eve_peak = range(19, 23)
 dbl_ord_qty = 90
 
 class FuncNotif():
-    def __init__(self, custids, last_run_date='2015/02/22', run_date='2016/07/31', coeff=None, dct_state=None, employeetrial=True, bins=range(5,25,3)):
-        self.last_run_date = str(pd.to_datetime(last_run_date).date())
-        self.run_date = pd.to_datetime(run_date)
+    def __init__(self, custids, last_run_date, run_date, coeff=None, dct_state=None, employeetrial=True, bins=range(5,25,3)):
+        self.run_date = pd.to_datetime(run_date, format='%d/%m/%Y')
+        try:
+            self.last_run_date = str(pd.to_datetime(last_run_date, format='%d/%m/%Y').date())
+        except:
+            self.last_run_date = str(pd.to_datetime(last_run_date, format='%Y-%m-%d').date())
+
         self.rundates = pd.date_range(pd.to_datetime(self.last_run_date), (self.run_date - timedelta(1)))  # (last_run_date, date.today())
         self.df_1 = pd.DataFrame(None, columns=['disp_wt', 'cons', 'Date'])
         self.custids = custids

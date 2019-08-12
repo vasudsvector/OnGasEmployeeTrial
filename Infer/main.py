@@ -74,14 +74,15 @@ class RunPred():
         df_temp_rel = fn.fetch_temp(df_temp)
         for date1 in fn.rundates:  # Run it for all days between previous run and current run
             mean_temp = df_temp_rel.loc[date1.date(), 'Mean_Temp']  # Mean temperature of the day, calculated during peak hours
-            lat_cons, dct_state = fn.notif(date1=date1, cust_ent_date=cust_ent_date, custids=self.custids, mean_temp=mean_temp, df_order=df_order,
-                     dct_state=dct_state, cons=lat_cons)
+            if date1.strftime('%Y-%m-%d') not in dct_state:
+                lat_cons, dct_state = fn.notif(date1=date1, cust_ent_date=cust_ent_date, custids=self.custids, mean_temp=mean_temp, df_order=df_order,
+                         dct_state=dct_state, cons=lat_cons)
             dct_state['last_run_date'] = str(date1.date())
         self.write_data(lat_cons, dct_state)
 
         # TODO Calculates error in model - Decide how this section can be useful
         df2 = fn.df_1
-        df2.to_csv('Error.csv')
+        df2.to_csv('./Data/Debug/Error.csv')
         #dct_state = fn.read_state(state_loc)
 
         # TODO runfile argument to be checked
@@ -109,7 +110,7 @@ if __name__ == '__main__':
 '992151505',
 '992761916',
 '992889140']
-    rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True, run_until_date='08/09/2019', custids=custids, local_test=True, employeetrial=True, bins=range(2,25,1))
+    rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True, run_until_date='10/08/2019', custids=custids, local_test=True, employeetrial=True, bins=range(2,25,1))
     rp.main()
 
 

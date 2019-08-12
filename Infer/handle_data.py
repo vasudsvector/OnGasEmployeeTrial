@@ -60,7 +60,6 @@ class HandleData():
             if not(self.startfromscratch):
                 self.dct_inp['state'] = self._handle_file_rw(self.bucket, state_key, 'json')
             self.dct_inp['order'] = self._handle_file_rw(self.bucket, order_key, 'csv')
-            self.dct_inp['cons'] = self._handle_file_rw(self.bucket, cons_key, 'csv')
             self.dct_inp['cust'] = self._handle_file_rw(self.bucket, cust_key, 'csv')
             self.dct_inp['temp'] = self._handle_file_rw(self.bucket, temp_key, 'csv')
             return self.dct_inp
@@ -73,21 +72,20 @@ class HandleData():
         if self.mode == 'r':
             if not(self.startfromscratch):
                 self.dct_inp = {}
-                with open(r'./data/notify_simp_avg.json', 'r') as fr:
+                with open(r'./Data/State/notify_simp_avg.json', 'r') as fr:
                     self.dct_inp['state'] = json.load(fr)
-                self.dct_inp['cons'] = pd.read_csv(r'./data/OrderData1.csv') #TODO Reevaluate the need for this
-            self.dct_inp['coeff'] = pd.read_csv(r'./Cust_coeff_simple_avg.csv')
-            self.dct_inp['order'] = pd.read_csv(r'./data/OrderData1.csv')
+            self.dct_inp['coeff'] = pd.read_csv(r'./Data/Input/Cust_coeff_simple_avg.csv')
+            self.dct_inp['order'] = pd.read_csv(r'./Data/Input/OrderData1.csv')
             try:
-                self.dct_inp['cust'] = pd.read_csv(r'./data/Customer_First_Entry_Date.csv', header=None)
+                self.dct_inp['cust'] = pd.read_csv(r'./Data/Input/Customer_First_Entry_Date.csv', header=None)
             except FileNotFoundError:
-                df_order = pd.read_csv(r'./data/OrderData1.csv')
-                cust_first_ent = df_order.groupby(['DeliveryCustomerAccountKey']).min()['OrderDateKey']
-                cust_first_ent.to_csv(r'./data/Customer_First_Entry_Date.csv')
-                self.dct_inp['cust'] = pd.read_csv(r'./data/Customer_First_Enry_Date.csv', header=None)
-            self.dct_inp['temp'] = pd.read_csv(r'./data/temperature1.csv')
+                df_order = pd.read_csv(r'./Data/Input/OrderData1.csv')
+                cust_first_ent = df_order.groupby(['AccountNumber']).min()['OrderDateKey']
+                cust_first_ent.to_csv(r'./Data/Input/Customer_First_Entry_Date.csv', header=None)
+                self.dct_inp['cust'] = pd.read_csv(r'./Data/Input/Customer_First_Enry_Date.csv', header=None)
+            self.dct_inp['temp'] = pd.read_csv(r'./Data/Input/temperature1.csv')
             return self.dct_inp
         elif self.mode == 'w':
-            with open(r'./data/notify_simp_avg.json', 'w') as fw:
+            with open(r'./Data/State/notify_simp_avg.json', 'w') as fw:
                 json.dump(state, fw, indent=4)
-            cons.to_csv(r'./data/cons.csv')
+            cons.to_csv(r'./Data/Debug/cons.csv')
