@@ -69,7 +69,8 @@ class FuncNotif():
 
     def _write_state_out(self, df_cumulative_consumption, rundate, cust_notify_tdy, cust_notified_already):
         self.dct_state['Cumulative_Consumption'] = df_cumulative_consumption.to_json()
-        self.dct_state[str(rundate)] = list(cust_notify_tdy)
+        ls_notif = [{'Date' : str(rundate), 'Empty_Customers' : list(cust_notify_tdy)}]
+        self.dct_state['daily_notifications'].extend(ls_notif)
         self.dct_state['cust_notified_already'] = list(cust_notified_already)
         self.dct_state['cust_notify_today'] = list(cust_notify_tdy)
 
@@ -119,7 +120,7 @@ class FuncNotif():
         cust_notified_already = set(cust_notified_already)
         cust_notified_already.update(cust_ready_to_order)
 
-        check = any(item in custids for item in disp_weight.index)
+        check = any(item in custids for item in disp_weight.index) and (disp_weight['DispensedWeight'].sum() > 0)
         if check:
             disp_weight_rel = pd.DataFrame(disp_weight.loc[disp_weight.index.isin(custids), 'DispensedWeight'])
             self.error_consum(disp_weight_rel, df_cumulative_consumption, rundate)

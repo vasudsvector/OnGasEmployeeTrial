@@ -111,8 +111,8 @@ if __name__ == '__main__':
                '992761916',
                '992889140']
     rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
-                 run_until_date='14/08/2019', custids=custids, local_test=True, employeetrial=True,
-                 bins=range(2, 25, 2))
+                 run_until_date='15/08/2019', custids=custids, local_test=True, employeetrial=True,
+                 bins=range(2, 25, 1))
     rp.main()
 
     ### Define Variables ###
