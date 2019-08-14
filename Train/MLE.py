@@ -10,7 +10,6 @@ rf = RandomForestRegressor()
 svr = LinearSVR()
 import Train.split_by_season as ss
 
-
 # Energy in bottle
 tot_en = 2212  # in MJ, 45kg*1.856*26
 base_cons = 4.5  # 9MJ burner burning for half an hour everyday
@@ -26,6 +25,7 @@ alpha = 12  # Temperature below which heater and hot water will start pushing th
 beta = 6  # Temperature at which max_cons is being consumed at the house
 gamma = (max_cons - base_cons) / (alpha - beta)
 
+
 class MLE:
     def __init__(self, binsize, cols):
         self.binsize = binsize
@@ -38,7 +38,6 @@ class MLE:
         # print(hist1)
         return hist1
 
-
     def crt_tar(self, x):
         hist1 = self.hist_grp(x)
         days = x['Mean_Temp'].count()
@@ -48,12 +47,10 @@ class MLE:
         df['days'] = days
         return df
 
-
     def shift_grp(self, df_cust):
         df_cust['Weight'] = df_cust['Weight'].shift(-1)
         df_cust['Weight1'] = df_cust['Weight1'].shift(-1)
         return df_cust
-
 
     def calc_ml_feat(self, df2):
         df2.loc[df2['DispensedWeight1'].isnull(), 'DispensedWeight1'] = df2.loc[
@@ -66,7 +63,6 @@ class MLE:
         feat = feat.groupby(['Customer']).apply(lambda x: self.shift_grp(x))
         feat = feat.dropna(subset=['Weight'])
         return feat
-
 
     def linreg(self, x, tar_column):
         lr.fit(x.drop(['Weight', 'Weight1', 'OrderNum', 'Customer'], 1), x[tar_column])

@@ -66,11 +66,12 @@ def calc_cyl_cnt(df_cust):
     df_cust['cyl_count'] = np.floor(df_cust['Cumulative_Consumption'] / 43)
     return df_cust
 
+
 def meas_date_error(df_cust):
     final_diff = (df_cust['cyl_count'] - df_cust['order_num'])[-1]
     if abs(final_diff) <= 2:
         df_cyl_grp = df_cust.groupby('cyl_count')
-        dct1 = {grp:df_cyl_grp.get_group(grp).index[0] for grp in df_cyl_grp.groups}
+        dct1 = {grp: df_cyl_grp.get_group(grp).index[0] for grp in df_cyl_grp.groups}
         df = pd.DataFrame(dct1.values(), index=dct1.keys(), columns=['Predicted_Order_Date'])
         df_cyl_grp = df_cust.groupby('order_num')
         dct1 = {grp: df_cyl_grp.get_group(grp).index[0] for grp in df_cyl_grp.groups}
@@ -83,7 +84,6 @@ def meas_date_error(df_cust):
         return df
     else:
         return pd.DataFrame()
-
 
 
 if __name__ == '__main__':
@@ -121,8 +121,9 @@ if __name__ == '__main__':
         if df_err.empty:
             pass
         else:
-            print('For customer {}, error in days is {}'.format(cust, np.abs(df_err['error']).mean() / df_err['dto'].mean()))
-            df_err.to_csv(str(cust)+'.csv')
+            print('For customer {}, error in days is {}'.format(cust,
+                                                                np.abs(df_err['error']).mean() / df_err['dto'].mean()))
+            df_err.to_csv(str(cust) + '.csv')
 
         mape = plt_figs(df_cust, cat, cust)
         ls.extend([mape])

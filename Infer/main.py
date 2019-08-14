@@ -4,8 +4,10 @@ from Infer.notif import FuncNotif
 from Infer.handle_data import HandleData
 from datetime import datetime, timedelta
 
+
 class RunPred():
-    def __init__(self, aws_id, aws_secret, bucket, startfromscratch, startdate, run_until_date = None, custids = None, local_test=False, employeetrial = False, bins=range(5,25,3)):
+    def __init__(self, aws_id, aws_secret, bucket, startfromscratch, startdate, run_until_date=None, custids=None,
+                 local_test=False, employeetrial=False, bins=range(5, 25, 3)):
         self.aws_id = aws_id
         self.aws_secret = aws_secret
         self.startfromscratch = startfromscratch
@@ -20,7 +22,7 @@ class RunPred():
             self.run_until_date = run_until_date
 
         if custids == None:
-            self.custids = self.extract_cust() #TODO write this function to extract cust list from order history
+            self.custids = self.extract_cust()  # TODO write this function to extract cust list from order history
         else:
             custids1 = [int(cust) for cust in custids]
             self.custids = custids1
@@ -30,22 +32,22 @@ class RunPred():
         else:
             self.aws = True
 
-
     def read_data(self):
-        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate, mode='r')
+        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate,
+                        mode='r')
         if self.aws:
             dct_inp = hd.read_write_main()
         else:
             dct_inp = hd.read_write_main_local()
         return dct_inp
 
-    def write_data(self,lat_cons,dct_state):
-        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate, mode='w')
+    def write_data(self, lat_cons, dct_state):
+        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate,
+                        mode='w')
         if self.aws:
             hd.read_write_main(dct_state, lat_cons)
         else:
             hd.read_write_main_local(dct_state, lat_cons)
-
 
     def main(self):
         dct_inp = self.read_data()
@@ -54,65 +56,64 @@ class RunPred():
         df_coeff = dct_inp['coeff']
         dct_state = dct_inp['state']
         df_order = dct_inp['order']
-        df_cust = dct_inp['cust']
+        cust_ent_date = dct_inp['cust']
         df_temp = dct_inp['temp']
 
-        fn = FuncNotif(self.custids, last_run_date, run_date, coeff=df_coeff, dct_state=dct_state, employeetrial=self.employeetrial, bins=self.bins)  # TODO dct_state=notify_file
+        fn = FuncNotif(self.custids, last_run_date, run_date, coeff=df_coeff, dct_state=dct_state,
+                       employeetrial=self.employeetrial, bins=self.bins)
 
-        df_order = rf.filter_data(df_order) #TODO update this after trial to include other areas
+        df_order = rf.filter_data(df_order)  # TODO update this after trial to include other areas
 
-        df_cust.columns = ['Customer', 'Join_Date']
-        cust_ent_date = df_cust # TODO Can remove this block for cust_ent_date
+        cust_ent_date.columns = ['Customer', 'Join_Date']
         cust_ent_date.set_index('Customer', inplace=True)
         cust_ent_date['Join_Date'] = pd.to_datetime(cust_ent_date['Join_Date'], format='%Y%m%d')
 
         custlist1 = cust_ent_date.loc[cust_ent_date['Join_Date'] <= fn.rundates[-1]].index.tolist()
         custlist = [cust for cust in custlist1 if cust in self.custids]
         lat_cons = pd.DataFrame(None, index=custlist,
-                             columns=fn.rundates)  # Init df - df containing daily consumption for all dates in the current run
+                                columns=fn.rundates)  # Init df - df containing daily consumption for all dates in the current run
 
         df_temp_rel = fn.fetch_temp(df_temp)
         for date1 in fn.rundates:  # Run it for all days between previous run and current run
-            mean_temp = df_temp_rel.loc[date1.date(), 'Mean_Temp']  # Mean temperature of the day, calculated during peak hours
+            mean_temp = df_temp_rel.loc[
+                date1.date(), 'Mean_Temp']  # Mean temperature of the day, calculated during peak hours
             if date1.strftime('%Y-%m-%d') not in dct_state:
-                lat_cons, dct_state = fn.notif(date1=date1, cust_ent_date=cust_ent_date, custids=self.custids, mean_temp=mean_temp, df_order=df_order,
-                         dct_state=dct_state, cons=lat_cons)
+                lat_cons, dct_state = fn.notif(date1=date1, cust_ent_date=cust_ent_date, custids=self.custids,
+                                               mean_temp=mean_temp, df_order=df_order,
+                                               dct_state=dct_state, cons=lat_cons)
             dct_state['last_run_date'] = str(date1.date())
         self.write_data(lat_cons, dct_state)
 
-        # TODO Calculates error in model - Decide how this section can be useful
         df2 = fn.df_1
         df2.to_csv('./Data/Debug/Error.csv')
-        #dct_state = fn.read_state(state_loc)
+        # dct_state = fn.read_state(state_loc)
 
-        # TODO runfile argument to be checked
-        # TODO Customer entry date information argument to be checked
-        # TODO consumption file to be written out?
 
 if __name__ == '__main__':
     custids = ['992037096',
-'992760513',
-'992761565',
-'992764766',
-'992729448',
-'992788996',
-'992827378',
-'992524526',
-'992721238',
-'990991692',
-'991129164',
-'991298890',
-'992626386',
-'992690960',
-'992283717',
-'992638039',
-'991068621',
-'992151505',
-'992761916',
-'992889140']
-    rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True, run_until_date='10/08/2019', custids=custids, local_test=True, employeetrial=True, bins=range(2,25,1))
+               '992760513',
+               '992761565',
+               '992764766',
+               '992729448',
+               '992788996',
+               '992827378',
+               '992524526',
+               '992721238',
+               '990991692',
+               '991129164',
+               '991298890',
+               '992626386',
+               '992690960',
+               '992283717',
+               '992638039',
+               '991068621',
+               '992151505',
+               '992761916',
+               '992889140']
+    rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
+                 run_until_date='14/08/2019', custids=custids, local_test=True, employeetrial=True,
+                 bins=range(2, 25, 2))
     rp.main()
-
 
     ### Define Variables ###
     ## File Locations ##

@@ -3,6 +3,7 @@ import numpy as np
 import os
 import read_filter as rf
 
+
 class Customers():
     def __init__(self, custids, df_coeffs, bins):
         self.custids = custids
@@ -21,9 +22,9 @@ class Customers():
 
     def daily_cons(self, temp_today):
         temp = np.histogram(temp_today, bins=self.bins)[0]
-        temp = np.insert(temp,temp.shape[0],np.sum(temp))
+        temp = np.insert(temp, temp.shape[0], np.sum(temp))
         cons = self.coeffs.dot(temp)
-        cons[cons<0] = 0
+        cons[cons < 0] = 0
         return cons
 
 
@@ -48,7 +49,7 @@ if __name__ == '__main__':
         df_state = pd.DataFrame(0, index=custids, columns=['Cumulative_Consumption'])
     else:
         df_state = pd.read_csv(state_loc)
-        df_state = df_state.rename_axis({'Unnamed: 0':'Customer'},axis=1)
+        df_state = df_state.rename_axis({'Unnamed: 0': 'Customer'}, axis=1)
         df_state.set_index('Customer', inplace=True)
         customer = Customers(custids, df_coeffs)
         df_state = customer.daily_cons(temp_today)

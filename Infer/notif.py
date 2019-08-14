@@ -3,7 +3,6 @@ import pandas as pd
 import read_filter as rf
 from datetime import date, timedelta, datetime
 import json
-import logging
 
 from Infer.pred_consumption import Customers
 import proc_temperature as pt
@@ -15,15 +14,18 @@ morn_peak = range(7, 10)
 eve_peak = range(19, 23)
 dbl_ord_qty = 90
 
+
 class FuncNotif():
-    def __init__(self, custids, last_run_date, run_date, coeff=None, dct_state=None, employeetrial=True, bins=range(5,25,3)):
+    def __init__(self, custids, last_run_date, run_date, coeff=None, dct_state=None, employeetrial=True,
+                 bins=range(5, 25, 3)):
         self.run_date = pd.to_datetime(run_date, format='%d/%m/%Y')
         try:
             self.last_run_date = str(pd.to_datetime(last_run_date, format='%d/%m/%Y').date())
         except:
             self.last_run_date = str(pd.to_datetime(last_run_date, format='%Y-%m-%d').date())
 
-        self.rundates = pd.date_range(pd.to_datetime(self.last_run_date), (self.run_date - timedelta(1)))  # (last_run_date, date.today())
+        self.rundates = pd.date_range(pd.to_datetime(self.last_run_date),
+                                      (self.run_date - timedelta(1)))  # (last_run_date, date.today())
         self.df_1 = pd.DataFrame(None, columns=['disp_wt', 'cons', 'Date'])
         self.custids = custids
         self.trial = employeetrial
@@ -61,7 +63,8 @@ class FuncNotif():
         df_cumulative_consumption.fillna(0, inplace=True)
         df_cumulative_consumption['Cumulative_Consumption'] = df_cumulative_consumption['Cumulative_Consumption'] + \
                                                               daily_cons
-        cust_ready_to_order, cust_emptied_both = msg.categorise_customers(df_cumulative_consumption)  # Find customers who emptied one and both bottles on this day
+        cust_ready_to_order, cust_emptied_both = msg.categorise_customers(
+            df_cumulative_consumption)  # Find customers who emptied one and both bottles on this day
         return cust_ready_to_order, cust_emptied_both, df_cumulative_consumption
 
     def _write_state_out(self, df_cumulative_consumption, rundate, cust_notify_tdy, cust_notified_already):
@@ -95,14 +98,15 @@ class FuncNotif():
 
         dct_cumulative_consumption = json.loads(dct_state['Cumulative_Consumption'])
         df_cumulative_consumption = pd.DataFrame(dct_cumulative_consumption)
-        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(float) # JSON DUMPED to str
+        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(float)  # JSON DUMPED to str
         msg = Order_Msg(run_date=rundate, last_run_date=last_run_date, ord_qty=None, dbl_ord_qty=None)
-        cust_ready_to_order, cust_emptied_both, df_cumulative_consumption = self.fetch_empty_cust(msg, df_cumulative_consumption, cons[rundate])
+        cust_ready_to_order, cust_emptied_both, df_cumulative_consumption = self.fetch_empty_cust(msg,
+                                                                                                  df_cumulative_consumption,
+                                                                                                  cons[rundate])
 
         # cust_ready_to_order - Customers whose cumulative consumption is between 45kg and 90kg
         # cust_emptied_both - Customers whose cumulative consumption exceeded 90kg
         #
-
 
         # People who have already ordered need not be notified instead their predicted consumption should be corrected, find them
         cust_due_notif, cust_ordered_last_day, disp_weight = msg.remove_already_ordered(df_order,
@@ -111,10 +115,9 @@ class FuncNotif():
         # cust_due_notif -
 
         # Who should be notified today?
-        cust_notify_tdy = cust_due_notif - set(cust_notified_already) # Exclude already notified customers
+        cust_notify_tdy = cust_due_notif - set(cust_notified_already)  # Exclude already notified customers
         cust_notified_already = set(cust_notified_already)
         cust_notified_already.update(cust_ready_to_order)
-
 
         check = any(item in custids for item in disp_weight.index)
         if check:
@@ -124,15 +127,18 @@ class FuncNotif():
         cust_deliv_last_day = set(disp_weight.index)
         cust_notified_already = (cust_notified_already - cust_deliv_last_day)
 
-        if not(disp_weight.empty) and any(item in custids for item in cust_deliv_last_day):
+        if not (disp_weight.empty) and any(item in custids for item in cust_deliv_last_day):
             disp_weight['Cumulative_Consumption'] = disp_weight.loc[disp_weight.index.isin(custids), :]
             df_cumulative_consumption.fillna(0, inplace=True)
             if not self.trial:
-                df_cumulative_consumption.loc[df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = \
-                df_cumulative_consumption.loc[df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] - \
-                disp_weight.loc[disp_weight.index.isin(cust_deliv_last_day), 'Cumulative_Consumption']
+                df_cumulative_consumption.loc[
+                    df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = \
+                    df_cumulative_consumption.loc[
+                        df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] - \
+                    disp_weight.loc[disp_weight.index.isin(cust_deliv_last_day), 'Cumulative_Consumption']
             elif self.trial:
-                df_cumulative_consumption.loc[df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = 0
+                df_cumulative_consumption.loc[
+                    df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = 0
 
         # TODO New module or object needs to be created after cumulative consumption calculation
         df_cumulative_consumption['Cumulative_Consumption'] = df_cumulative_consumption[
@@ -177,7 +183,7 @@ if __name__ == '__main__':
     dct_state['cust_notified_already'] = set()
     df_coeffs = pd.read_csv(coeff_loc)
 
-    fn = FuncNotif(custids, last_run_date, run_date, coeff=df_coeffs, dct_state=dct_state)  # TODO dct_state=notify_file
+    fn = FuncNotif(custids, last_run_date, run_date, coeff=df_coeffs, dct_state=dct_state)
 
     df_auck_sub = rf.filter_data(df_order)
 
@@ -209,11 +215,6 @@ if __name__ == '__main__':
         json.dump(fn.dct_state, fw)
 
     lat_cons.to_csv(cons_file)
-    # TODO Calculates error in model - Decide how this section can be useful
     # df2 = fn.df_1
     # fn.df_1.to_csv('Error.csv')
     # dct_state = fn.read_state(state_loc)
-
-    # TODO runfile argument to be checked
-    # TODO Customer entry date information argument to be checked
-    # TODO consumption file to be written out?
