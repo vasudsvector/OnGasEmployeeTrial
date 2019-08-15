@@ -104,7 +104,7 @@ class HandleData():
                 df_cons.set_index('Date', inplace=True)
                 df_cons.columns = [int(col) for col in df_cons.columns]
                 df_cons = df_cons.append(cons)
-                df_cons = df_cons[~df_cons.index.duplicated(keep='first')]
+                df_cons = df_cons[~df_cons.index.duplicated(keep='last')]
                 df_cons.sort_index(inplace=True)
                 df_cons.to_csv(r'./Data/Debug/cons.csv')
             else:
