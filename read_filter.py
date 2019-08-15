@@ -26,7 +26,7 @@ def filter_data(df):
     df_auck = df.loc[df['PriorityStatus'].isin(['Normal', 'Promised Date', 'Urgent', 'Unknown']), :]
     df_grp_cust1 = df_auck.groupby('DeliveryCustomerAccountKey').apply(lambda x: _fill_null_mean(x))
     df_grp_cust = df_grp_cust1.groupby('DeliveryCustomerAccountKey')
-    cust_sub = df_grp_cust.apply(lambda x: True if (x.shape[0] >= 6 and x.shape[0] <= 108) else False)
+    cust_sub = df_grp_cust.apply(lambda x: True if ((x['DispensedWeight'].count()) >= 2 and (x['DispensedWeight'].count()) <= 108) else False)
     df_auck_sub = df_grp_cust1.loc[df_auck['DeliveryCustomerAccountKey'].isin(cust_sub.index[cust_sub]), :]
     df_auck_sub['OrderDateKey'] = pd.to_datetime(df_auck_sub['OrderDateKey'], format='%Y%m%d')
     df_auck_sub['MovementDateKey'] = pd.to_datetime(df_auck_sub['MovementDateKey'], format='%Y%m%d')

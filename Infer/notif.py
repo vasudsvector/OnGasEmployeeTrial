@@ -99,7 +99,7 @@ class FuncNotif():
 
         dct_cumulative_consumption = json.loads(dct_state['Cumulative_Consumption'])
         df_cumulative_consumption = pd.DataFrame(dct_cumulative_consumption)
-        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(float)  # JSON DUMPED to str
+        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(int)  # JSON DUMPED to str
         msg = Order_Msg(run_date=rundate, last_run_date=last_run_date, ord_qty=None, dbl_ord_qty=None)
         cust_ready_to_order, cust_emptied_both, df_cumulative_consumption = self.fetch_empty_cust(msg,
                                                                                                   df_cumulative_consumption,

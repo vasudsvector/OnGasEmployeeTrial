@@ -7,8 +7,8 @@ class Order_Msg():
         self.run_date = run_date
         self.last_run_date = last_run_date
         if ord_qty or dbl_ord_qty is None:
-            self.ord_qty = 43
-            self.dbl_ord_qty = 86
+            self.ord_qty = 44.5
+            self.dbl_ord_qty = 90
         else:
             self.ord_qty = ord_qty
             self.dbl_ord_qty = dbl_ord_qty

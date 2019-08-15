@@ -74,7 +74,7 @@ class HandleData():
 
             if not (self.startfromscratch):
                 self.dct_inp = {}
-                with open(r'./Data/State/notify_2', 'r') as fr:
+                with open(r'./Data/State/notify_simp_avg.json', 'r') as fr:
                     self.dct_inp['state'] = json.load(fr)
 
             self.dct_inp['coeff'] = pd.read_csv(r'./Data/Input/Cust_coeff_simple_avg.csv')
