@@ -40,7 +40,8 @@ def calc_mean_temp(df_temp, df_ts, morn_peak=range(6,10), eve_peak = range(17,23
     mp.extend(ep)
     df_rel = df_temp.loc[df_temp['Hotd'].isin(mp),:]
     df_rel1 = pd.DataFrame(None, index=pd.unique(df_rel['Date']))
-    df_rel1['Mean_Temp'] = df_rel.groupby('Date').mean()['Tavg'].values
+    df_rel1 = df_rel1.join(df_rel.groupby('Date').mean()['Tavg'])
+    df_rel1.rename(columns={'Tavg':'Mean_Temp'}, inplace=True)
     if df_ts.empty:
         df2 = None
     else:
