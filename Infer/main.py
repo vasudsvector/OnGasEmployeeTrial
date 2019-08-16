@@ -7,14 +7,18 @@ from datetime import datetime, timedelta
 
 class RunPred():
     def __init__(self, aws_id, aws_secret, bucket, startfromscratch, startdate, run_until_date=None, custids=None,
-                 local_test=False, employeetrial=False, bins=range(5, 25, 3)):
+                 local_test=False, employeetrial=False, bins=range(5, 25, 3), run='1_simp_avg'):
         self.aws_id = aws_id
         self.aws_secret = aws_secret
         self.startfromscratch = startfromscratch
         self.bucket = bucket
         self.startdate = startdate
         self.employeetrial = employeetrial
-        self.bins = bins
+        self.run = run
+        if '1_' in self.run:
+            self.bins = range(2,25,1)
+        elif '2_' in self.run:
+            self.bins = range(2, 25, 2)
 
         if run_until_date is None:
             self.run_until_date = datetime.today() - timedelta(1)
@@ -33,7 +37,7 @@ class RunPred():
             self.aws = True
 
     def read_data(self):
-        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate,
+        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate, self.run,
                         mode='r')
         if self.aws:
             dct_inp = hd.read_write_main()
@@ -42,7 +46,7 @@ class RunPred():
         return dct_inp
 
     def write_data(self, lat_cons, dct_state):
-        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate,
+        hd = HandleData(self.aws_id, self.aws_secret, self.bucket, self.startfromscratch, self.custids, self.startdate,self.run,
                         mode='w')
         if self.aws:
             hd.read_write_main(dct_state, lat_cons)
@@ -85,7 +89,7 @@ class RunPred():
         self.write_data(lat_cons, dct_state)
 
         df2 = fn.df_1
-        df2.to_csv('./Data/Debug/Error.csv')
+        df2.to_csv('./Data/Debug/' + self.run + '/Error.csv')
         # dct_state = fn.read_state(state_loc)
 
 
@@ -110,10 +114,11 @@ if __name__ == '__main__':
                '992151505',
                '992761916',
                '992889140']
-    rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
+    for run in ['1_simp_avg', '1_smoothed', '2_simp_avg', '2_smoothed']:
+        rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
                  run_until_date='16/08/2019', custids=custids, local_test=True, employeetrial=True,
-                 bins=range(2, 25, 1))
-    rp.main()
+                 bins=range(2, 25, 1), run=run)
+        rp.main()
 
     ### Define Variables ###
     ## File Locations ##

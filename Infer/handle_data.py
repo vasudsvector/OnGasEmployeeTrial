@@ -6,12 +6,13 @@ import json
 
 
 class HandleData():
-    def __init__(self, aws_id, aws_secret, bucket, startfromscratch, custids, startdate, mode='r'):
+    def __init__(self, aws_id, aws_secret, bucket, startfromscratch, custids, startdate, run, mode='r'):
         self.client = boto3.client('s3', aws_access_key_id=aws_id,
                                    aws_secret_access_key=aws_secret)
         self.mode = mode
         self.startfromscratch = startfromscratch
         self.bucket = bucket
+        self.run = run
         if self.startfromscratch:
             self.dct_inp = {}
             self.dct_inp['state'] = {}
@@ -70,14 +71,18 @@ class HandleData():
             self._handle_file_rw(self.bucket, cons_key, 'csv', cons)
 
     def read_write_main_local(self, state=None, cons=None):
+        coeff_file = r'./Data/Input/' + self.run +  '/Cust_coeff.csv'
+        cons_file = r'./Data/Debug/' + self.run + '/cons.csv'
+        notify_file = r'./Data/State/' + self.run + '/notify.json'
+
         if self.mode == 'r':
 
             if not (self.startfromscratch):
                 self.dct_inp = {}
-                with open(r'./Data/State/notify_simp_avg.json', 'r') as fr:
+                with open(notify_file, 'r') as fr:
                     self.dct_inp['state'] = json.load(fr)
 
-            self.dct_inp['coeff'] = pd.read_csv(r'./Data/Input/Cust_coeff_simple_avg.csv')
+            self.dct_inp['coeff'] = pd.read_csv(coeff_file)
             self.dct_inp['order'] = pd.read_csv(r'./Data/Input/OrderData1.csv')
 
             try:
@@ -92,23 +97,23 @@ class HandleData():
             return self.dct_inp
 
         elif self.mode == 'w':
-            with open(r'./Data/State/notify_simp_avg.json', 'w') as fw:
+            with open(notify_file, 'w') as fw:
                 json.dump(state, fw, indent=4)
 
             cons.index.name = 'Customers'
             cons.columns.name = 'Date'
             cons = cons.T
-            if os.path.isfile(r'./Data/Debug/cons.csv'):
-                df_cons = pd.read_csv(r'./Data/Debug/cons.csv')
+            if os.path.isfile(cons_file):
+                df_cons = pd.read_csv(cons_file)
                 df_cons['Date'] = pd.to_datetime(df_cons['Date'], format='%Y-%m-%d')
                 df_cons.set_index('Date', inplace=True)
                 df_cons.columns = [int(col) for col in df_cons.columns]
                 df_cons = df_cons.append(cons)
                 df_cons = df_cons[~df_cons.index.duplicated(keep='last')]
                 df_cons.sort_index(inplace=True)
-                df_cons.to_csv(r'./Data/Debug/cons.csv')
+                df_cons.to_csv(cons_file)
             else:
-                cons.to_csv(r'./Data/Debug/cons.csv')
+                cons.to_csv(cons_file)
             #     try:
             #         df_cons = df_cons.set_index('Customers').T
             #     except KeyError:
