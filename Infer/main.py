@@ -116,7 +116,7 @@ if __name__ == '__main__':
                '992889140']
     for run in ['1_simp_avg', '1_smoothed', '2_simp_avg', '2_smoothed']:
         rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
-                 run_until_date='16/08/2019', custids=custids, local_test=True, employeetrial=True,
+                 run_until_date='23/08/2019', custids=custids, local_test=True, employeetrial=True,
                  bins=range(2, 25, 1), run=run)
         rp.main()
 
