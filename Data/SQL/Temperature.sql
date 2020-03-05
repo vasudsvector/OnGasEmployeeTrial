@@ -173,7 +173,7 @@ FROM NDS.VectorEM.dimDate dd
 	JOIN HourlyData hd ON hd.DateKey = dd.DateKey
 WHERE
 --AND dd.DateKey = 20190612
-dd.Year IN (2014, 2015,2016,2017,2018, 2019)
+dd.Year IN (2014, 2015,2016,2017,2018, 2019, 2020)
 --AND td.TimeKey IN ('07:00:00.0000000')
 -- AND dd.IsWeekend + CONVERT(INT,dd.IsNZNationalHoliday) + CONVERT(INT,dd.IsAucklandHoliday) = 0
 --AND hd.TimeKey IN (

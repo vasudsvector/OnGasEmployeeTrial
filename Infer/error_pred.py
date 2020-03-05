@@ -5,14 +5,15 @@ from datetime import timedelta
 class error_pred():
     def __init__(self, df_order, cons, rundates):
         self.df_order = df_order
-        self.cons = cons
-        self.cons.set_index('Date', inplace=True)
+        self.cons = cons.T
+        if self.cons.index.name != 'Date':
+            self.cons.set_index('Date', inplace=True)
         self.cons.columns = [int(col) for col in self.cons.columns]
         self.cons.index = pd.to_datetime(self.cons.index)
         self.rundates = rundates
 
     def filter_orders_by_date(self):
-        df_ord = self.df_order.loc[df_order['MovementDateKey'].between(self.rundates[0], self.rundates[-1],True),:]
+        df_ord = self.df_order.loc[self.df_order['MovementDateKey'].between(self.rundates[0], self.rundates[-1],True),:]
         return df_ord
 
     def __grp_oper(self,grp):
@@ -25,23 +26,27 @@ class error_pred():
         df_act_consum = df_grp.groupby(['DeliveryCustomerAccountKey', 'MovementDateKey']).sum()['DispensedWeight'].reset_index()
         return df_act_consum
 
-    def get_last_order_date(self, cust):
+    def get_last_order_date(self, cust,date):
         df_del = self.df_order.loc[self.df_order['MovementTypeKey']==16, :]
-        df_del  = df_del.loc[df_del['DeliveryCustomerAccountKey'].isin(cust),:]
-        df_dates = df_del.groupby('DeliveryCustomerAccountKey').apply(lambda x: sorted(x['MovementDateKey'].unique())[-2])
-        return pd.DataFrame(df_dates)
+        df_del  = df_del.loc[df_del['DeliveryCustomerAccountKey'].isin([cust]),:]
+        ord_dates  = sorted(df_del.loc[df_del['MovementDateKey'] < date, 'MovementDateKey'])
+        if ord_dates:
+            last_ord_date = ord_dates[-1]
+        else:
+            last_ord_date = None
+        return last_ord_date
 
     def __get_cust_pred_cons(self, x):
         cons = self.cons
-        ab = cons.loc[pd.date_range(x['last_order_date'],x['MovementDateKey']), x.name].sum()
-        return ab
+        cust_cons = cons.loc[pd.date_range(x['last_order_date'],x['MovementDateKey']), x.name].sum()
+        return cust_cons
 
 
     def get_pred_cons(self, df_consum):
         pred_cons = df_consum.apply(lambda x: self.__get_cust_pred_cons(x), axis=1)
+        pred_cons = pd.DataFrame(pred_cons)
+        pred_cons['MovementDateKey'] = df_consum['MovementDateKey']
         return pd.DataFrame(pred_cons)
-
-
 
 
 
@@ -61,5 +66,5 @@ if __name__ == '__main__':
     df_consum.rename({0:'last_order_date'},axis=1, inplace=True)
     df_consum = df_consum.loc[df_consum['MovementDateKey'] >= pd.to_datetime('08/01/2019'),:]
     pred_cons = ep.get_pred_cons(df_consum)
-    df_error = df_consum.join(pred_cons)
+    df_error = pd.merge(df_consum.reset_index(), pred_cons.reset_index(), on=['DeliveryCustomerAccountKey','MovementDateKey'])
     df_error['Error'] = (df_error['DispensedWeight'] - df_error[0])*100/df_error['DispensedWeight']

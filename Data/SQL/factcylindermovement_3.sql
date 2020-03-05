@@ -37,7 +37,7 @@ SELECT SUM(fcm.DispensedWeightAmount) as DispensedWeight
 '991068621',
 '992151505',
 '992761916',
-'992889140', NULL)
+'992889140', NULL) --AND fcm.OrderDateKey > 20190801
   GROUP BY fcm.DeliveryCustomerAccountKey, fcm.OrderDateKey, fcm.DeliveryTimeKey, op.PriorityStatus,fcm.MovementTypeKey, fcm.CylinderKey, fcm.OnGasProductKey
 	,fcm.MovementDateKey
 --	,dd.DeliveryDepotName

@@ -3,6 +3,7 @@ import read_filter as rf
 from Infer.notif import FuncNotif
 from Infer.handle_data import HandleData
 from datetime import datetime, timedelta
+from error_pred import  error_pred
 
 
 class RunPred():
@@ -88,8 +89,17 @@ class RunPred():
             dct_state['last_run_date'] = str(date1.date())
         self.write_data(lat_cons, dct_state)
 
-        df2 = fn.df_1
-        df2.to_csv('./Data/Debug/' + self.run + '/Error.csv')
+        ep = error_pred(df_order, lat_cons, fn.rundates)
+        df_ord = ep.filter_orders_by_date()
+        df_consum = ep.calc_act_consump(df_ord)
+        df_dates = df_consum.apply(lambda x: ep.get_last_order_date(x['DeliveryCustomerAccountKey'], x['MovementDateKey']), axis=1)
+        df_consum['last_order_date'] = df_dates
+        df_consum.set_index('DeliveryCustomerAccountKey', inplace=True)
+        df_consum = df_consum.loc[df_consum['MovementDateKey'] >= pd.to_datetime('08/01/2019'), :]
+        pred_cons = ep.get_pred_cons(df_consum)
+        df_error = df_consum.join(pred_cons, rsuffix='_pred')
+        df_error['Error'] = (df_error['DispensedWeight'] - df_error[0]) * 100 / df_error['DispensedWeight']
+        df_error.to_csv('./Data/Debug/' + self.run + '/Error.csv')
         # dct_state = fn.read_state(state_loc)
 
 
@@ -116,7 +126,7 @@ if __name__ == '__main__':
                '992889140']
     for run in ['1_simp_avg', '1_smoothed', '2_simp_avg', '2_smoothed']:
         rp = RunPred('aws_id', 'aws_sec', 'aws_buck', startdate='10/07/2019', startfromscratch=True,
-                 run_until_date='23/08/2019', custids=custids, local_test=True, employeetrial=True,
+                 run_until_date='07/03/2020', custids=custids, local_test=True, employeetrial=True,
                  bins=range(2, 25, 1), run=run)
         rp.main()
 
