@@ -1,10 +1,12 @@
 {
-    "last_run_date": "2019-08-15",
+    "last_run_date": "2020-03-06",
     "cust_notified_already": [
         992037096,
-        992638039
+        992690960,
+        991068621,
+        992721238
     ],
-    "Cumulative_Consumption": "{\"Cumulative_Consumption\":{\"990991692\":42.77050799,\"991068621\":40.045570366,\"991129164\":9.4038651258,\"991298890\":7.271896727,\"992037096\":67.570478365,\"992151505\":22.366045888,\"992283717\":29.380811128,\"992524526\":0.0,\"992626386\":9.260949516,\"992638039\":48.37068447,\"992690960\":4.696060332,\"992721238\":21.129408478,\"992729448\":1.462515485,\"992760513\":18.36087553,\"992761565\":40.393131137,\"992761916\":11.250001034,\"992764766\":37.543807748,\"992788996\":0.0,\"992827378\":40.196652878,\"992889140\":0.0}}",
+    "Cumulative_Consumption": "{\"Cumulative_Consumption\":{\"990991692\":19.155474768,\"991068621\":90,\"991129164\":3.9687538393,\"991298890\":20.577030356,\"992037096\":55.90504214,\"992151505\":27.724496348,\"992283717\":14.199250758,\"992524526\":23.473479181,\"992626386\":12.421870806,\"992638039\":6.422697045,\"992690960\":63.228717198,\"992721238\":54.354375137,\"992729448\":43.216715249,\"992760513\":12.004747406,\"992761565\":36.687941048,\"992761916\":0.000093832,\"992764766\":0.006796957,\"992788996\":null,\"992827378\":0.0,\"992889140\":null}}",
     "daily_notifications": [
         {
             "Date": "2019-07-10",
@@ -151,9 +153,7 @@
         },
         {
             "Date": "2019-08-13",
-            "Empty_Customers": [
-                992638039
-            ]
+            "Empty_Customers": []
         },
         {
             "Date": "2019-08-14",
@@ -161,6 +161,889 @@
         },
         {
             "Date": "2019-08-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-16",
+            "Empty_Customers": [
+                990991692
+            ]
+        },
+        {
+            "Date": "2019-08-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-19",
+            "Empty_Customers": [
+                991068621
+            ]
+        },
+        {
+            "Date": "2019-08-20",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-21",
+            "Empty_Customers": [
+                992827378
+            ]
+        },
+        {
+            "Date": "2019-08-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-23",
+            "Empty_Customers": [
+                992761565
+            ]
+        },
+        {
+            "Date": "2019-08-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-27",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-08-30",
+            "Empty_Customers": [
+                992690960
+            ]
+        },
+        {
+            "Date": "2019-08-31",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-03",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-07",
+            "Empty_Customers": [
+                992151505
+            ]
+        },
+        {
+            "Date": "2019-09-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-09",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-10",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-11",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-13",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-16",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-20",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-21",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-23",
+            "Empty_Customers": [
+                991129164,
+                992638039,
+                990991692
+            ]
+        },
+        {
+            "Date": "2019-09-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-26",
+            "Empty_Customers": [
+                992037096
+            ]
+        },
+        {
+            "Date": "2019-09-27",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-28",
+            "Empty_Customers": [
+                992764766
+            ]
+        },
+        {
+            "Date": "2019-09-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-09-30",
+            "Empty_Customers": [
+                992524526
+            ]
+        },
+        {
+            "Date": "2019-10-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-03",
+            "Empty_Customers": [
+                992761565
+            ]
+        },
+        {
+            "Date": "2019-10-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-07",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-09",
+            "Empty_Customers": [
+                991068621
+            ]
+        },
+        {
+            "Date": "2019-10-10",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-11",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-13",
+            "Empty_Customers": [
+                992721238
+            ]
+        },
+        {
+            "Date": "2019-10-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-16",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-20",
+            "Empty_Customers": [
+                992638039
+            ]
+        },
+        {
+            "Date": "2019-10-21",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-23",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-27",
+            "Empty_Customers": [
+                992283717
+            ]
+        },
+        {
+            "Date": "2019-10-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-30",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-10-31",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-02",
+            "Empty_Customers": [
+                992524526
+            ]
+        },
+        {
+            "Date": "2019-11-03",
+            "Empty_Customers": [
+                992037096
+            ]
+        },
+        {
+            "Date": "2019-11-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-07",
+            "Empty_Customers": [
+                992690960
+            ]
+        },
+        {
+            "Date": "2019-11-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-09",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-10",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-11",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-13",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-16",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-20",
+            "Empty_Customers": [
+                992760513
+            ]
+        },
+        {
+            "Date": "2019-11-21",
+            "Empty_Customers": [
+                992764766
+            ]
+        },
+        {
+            "Date": "2019-11-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-23",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-27",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-11-30",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-03",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-07",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-09",
+            "Empty_Customers": [
+                992690960
+            ]
+        },
+        {
+            "Date": "2019-12-10",
+            "Empty_Customers": [
+                992761565,
+                992638039
+            ]
+        },
+        {
+            "Date": "2019-12-11",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-13",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-16",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-18",
+            "Empty_Customers": [
+                991298890,
+                992524526
+            ]
+        },
+        {
+            "Date": "2019-12-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-20",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-21",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-23",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-27",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-30",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2019-12-31",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-03",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-04",
+            "Empty_Customers": [
+                992690960
+            ]
+        },
+        {
+            "Date": "2020-01-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-07",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-09",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-10",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-11",
+            "Empty_Customers": [
+                992283717
+            ]
+        },
+        {
+            "Date": "2020-01-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-13",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-15",
+            "Empty_Customers": [
+                992764766
+            ]
+        },
+        {
+            "Date": "2020-01-16",
+            "Empty_Customers": [
+                992760513
+            ]
+        },
+        {
+            "Date": "2020-01-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-20",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-21",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-23",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-27",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-29",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-30",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-01-31",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-01",
+            "Empty_Customers": [
+                992524526
+            ]
+        },
+        {
+            "Date": "2020-02-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-03",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-06",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-07",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-08",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-09",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-10",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-11",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-12",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-13",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-14",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-15",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-16",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-17",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-18",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-19",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-20",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-21",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-22",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-23",
+            "Empty_Customers": [
+                992690960,
+                992638039
+            ]
+        },
+        {
+            "Date": "2020-02-24",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-25",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-26",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-27",
+            "Empty_Customers": [
+                992721238
+            ]
+        },
+        {
+            "Date": "2020-02-28",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-02-29",
+            "Empty_Customers": [
+                992037096
+            ]
+        },
+        {
+            "Date": "2020-03-01",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-03-02",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-03-03",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-03-04",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-03-05",
+            "Empty_Customers": []
+        },
+        {
+            "Date": "2020-03-06",
             "Empty_Customers": []
         }
     ],
