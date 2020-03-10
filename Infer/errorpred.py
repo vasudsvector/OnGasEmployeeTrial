@@ -2,8 +2,13 @@ import pandas as pd
 import read_filter as rf
 from datetime import timedelta
 
-class error_pred():
+class ErrorPred():
     def __init__(self, df_order, cons, rundates):
+        '''
+        :param df_order: Order information
+        :param cons: Predicted Consumption from algorithm
+        :param rundates: Dates of execution of code
+        '''
         self.df_order = df_order
         self.cons = cons.T
         if self.cons.index.name != 'Date':
@@ -13,6 +18,9 @@ class error_pred():
         self.rundates = rundates
 
     def filter_orders_by_date(self):
+        '''
+        :return: Filter the orders corresponding to the run dates
+        '''
         df_ord = self.df_order.loc[self.df_order['MovementDateKey'].between(self.rundates[0], self.rundates[-1],True),:]
         return df_ord
 
@@ -21,12 +29,21 @@ class error_pred():
         return grp
 
     def calc_act_consump(self, df_ord):
-        df_del_fill = df_ord.loc[df_ord['MovementTypeKey'].isin([10,16]),:]
-        df_grp = df_del_fill.groupby(['DeliveryCustomerAccountKey', 'CylinderKey']).apply(lambda x: self.__grp_oper(x))
-        df_act_consum = df_grp.groupby(['DeliveryCustomerAccountKey', 'MovementDateKey']).sum()['DispensedWeight'].reset_index()
+        '''
+        :param df_ord: Order information
+        :return: Calculate actual consumption from order information
+        '''
+        df_del_fill = df_ord.loc[df_ord['MovementTypeKey'].isin([10,16]),:] # Filter the delivery and fill movements
+        df_grp = df_del_fill.groupby(['DeliveryCustomerAccountKey', 'CylinderKey']).apply(lambda x: self.__grp_oper(x)) # For each cylinder and customer make one movement date key for all movements
+        df_act_consum = df_grp.groupby(['DeliveryCustomerAccountKey', 'MovementDateKey']).sum()['DispensedWeight'].reset_index() # For each customer and movementdate, find the total consumption
         return df_act_consum
 
     def get_last_order_date(self, cust,date):
+        '''
+        :param cust: Customer ID
+        :param date: Date
+        :return:
+        '''
         df_del = self.df_order.loc[self.df_order['MovementTypeKey']==16, :]
         df_del  = df_del.loc[df_del['DeliveryCustomerAccountKey'].isin([cust]),:]
         ord_dates  = sorted(df_del.loc[df_del['MovementDateKey'] < date, 'MovementDateKey'])
@@ -37,12 +54,20 @@ class error_pred():
         return last_ord_date
 
     def __get_cust_pred_cons(self, x):
+        '''
+        :param x: Rows from the predicted consumption dataframe
+        :return: Consumption for each customer
+        '''
         cons = self.cons
         cust_cons = cons.loc[pd.date_range(x['last_order_date'],x['MovementDateKey']), x.name].sum()
         return cust_cons
 
 
     def get_pred_cons(self, df_consum):
+        '''
+        :param df_consum: Dataframe with predicted consumption for each customer
+        :return: Dataframe with predicted consumption for each customer
+        '''
         pred_cons = df_consum.apply(lambda x: self.__get_cust_pred_cons(x), axis=1)
         pred_cons = pd.DataFrame(pred_cons)
         pred_cons['MovementDateKey'] = df_consum['MovementDateKey']
@@ -56,7 +81,7 @@ if __name__ == '__main__':
     df_cons = pd.read_csv(r'C:\Users\SurendranV\Projects\OnGas\Employeetrial_handover\Data\Debug\1_simp_avg\cons.csv')
     rundates = pd.date_range(pd.to_datetime('07/10/2019'),
                                   (pd.to_datetime('23/08/2019') - timedelta(1)))
-    ep = error_pred(df_order, df_cons, rundates)
+    ep = ErrorPred(df_order, df_cons, rundates)
     df_ord = ep.filter_orders_by_date()
     df_consum = ep.calc_act_consump(df_ord)
     cust = df_consum['DeliveryCustomerAccountKey']

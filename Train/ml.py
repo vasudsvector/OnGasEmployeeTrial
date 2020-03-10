@@ -7,6 +7,10 @@ from sklearn.linear_model import Lasso
 
 
 def ml(feat):
+    '''Training a model happens here and the coefficients are trained here for each customer
+    :param:feat - Machine learning Feature Matrix for each order
+    :return df_coef - Linear regression coefficient for each customer
+    '''
     ordercnt = feat.groupby('Customer')['OrderNum'].max()
     cols1 = feat.columns
     cols = cols1.drop(['Weight','OrderNum'])
@@ -17,9 +21,9 @@ def ml(feat):
 
     for cust in ordercnt.index:
         ls = range(1,ordercnt.loc[cust]+1)
-        combin = combinations(ls, 2)
+        combin = combinations(ls, 2) # Generates combination between multiple orders irrespective of if they are in sequence or not and calculates total days between them
 
-        for comb in combin:
+        for comb in combin: # Generates features for each combination
             feat1 = feat.loc[feat['Customer'] == cust,cols]
             feat2 = feat1.loc[feat['OrderNum'].between(comb[0]+1, comb[1]),:]
             feat3 = pd.DataFrame(feat2.sum(),index=cols).T
@@ -28,7 +32,7 @@ def ml(feat):
 
     customers = set(df_feat['Customer'])
 
-    for cust in customers:
+    for cust in customers: # For each customer train a model and append it to coefficients dataframe
         df_cust = df_feat.loc[df_feat['Customer']==cust,:]
         lin = Lasso(alpha=0.0001, precompute=True, max_iter=1000,
                     positive=True, random_state=9999, selection='random', fit_intercept=False)

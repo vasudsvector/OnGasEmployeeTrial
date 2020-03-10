@@ -35,7 +35,7 @@ All the folders under data folder has four subfolders.
 1) 1_simp_avg:
 The folder is for temperature bins at 1deg C intervals. simp_avg corresponds to the averaging technique used for generating coefficients for customers with less than 6 orders including new customers. The coefficient for these customers were derived by simply averaging from nearest neighbors based on survey data
 2) 1_smoothed:
-The folder is for temperature bins at 1deg C intervals. smoothed corresponds to the averaging technique used for generating coefficients for customers with less than 6 order including new customers. The coefficient for these customers were derived after removing customers with unusually large coefficient for a bin
+The folder is for temperature bins at 1deg C intervals. smoothed corresponds to the averaging technique used for generating coefficients for customers with less than 6 order including new customers. The coefficient for these customers were derived after removing customers with unusually large coefficient for a bin. These were derived manually.
 3) 2_simp_avg:
 The folder is for temperature bins at 2 deg C intervals. simp_avg explanation is as above
 4) 2_smoothed  

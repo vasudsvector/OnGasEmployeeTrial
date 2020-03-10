@@ -52,10 +52,15 @@ class MLE:
         df_cust['Weight1'] = df_cust['Weight1'].shift(-1)
         return df_cust
 
-    def calc_ml_feat(self, df2):
-        df2.loc[df2['DispensedWeight1'].isnull(), 'DispensedWeight1'] = df2.loc[
-            df2['DispensedWeight1'].isnull(), 'DispensedWeight']
-        feat = df2.groupby(['DeliveryCustomerAccountKey', 'order_num'])[
+    def calc_ml_feat(self, df_train):
+        '''
+        Create all the Machine Learning Features necessary for training a linear regressor
+        :param df_train: Order information corrected for double orders
+        :return: Machine learning feature for each order
+        '''
+        df_train.loc[df_train['DispensedWeight1'].isnull(), 'DispensedWeight1'] = df_train.loc[
+            df_train['DispensedWeight1'].isnull(), 'DispensedWeight']
+        feat = df_train.groupby(['DeliveryCustomerAccountKey', 'order_num'])[
             'DispensedWeight1', 'DispensedWeight', 'Mean_Temp'].apply(lambda x: self.crt_tar(x))
         feat = feat.droplevel(level=2, axis=0)
         feat = feat.drop_duplicates().reset_index()
@@ -64,10 +69,6 @@ class MLE:
         feat = feat.dropna(subset=['Weight'])
         return feat
 
-    def linreg(self, x, tar_column):
-        lr.fit(x.drop(['Weight', 'Weight1', 'OrderNum', 'Customer'], 1), x[tar_column])
-        coeffs = np.array(lr.coef_)
-        return coeffs
 
 
 if __name__ == '__main__':

@@ -7,6 +7,11 @@ import Train.crt_ts as ct
 import read_filter as rf
 
 def _calc_day_to_order(df):
+    '''
+    Feature creation by customer
+    :param df: Dataframe containing order information
+    :return:
+    '''
     df['MovementDateKey_S'] = df['MovementDateKey'].shift(1)
     df['consumption_days'] = (df['MovementDateKey'] - df['MovementDateKey_S'])
     df['days_to_order'] = (df['OrderDateKey'] - df['MovementDateKey_S'])

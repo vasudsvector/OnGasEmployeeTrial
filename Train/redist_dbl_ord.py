@@ -18,6 +18,13 @@ class RedistDouble:
         return x
 
     def redist_dbl_order(self, df_dto):
+        '''
+        The function redistributes the double order between last double order to all the single order uniformly.
+        This is necessary as the consumption from the second cylinder is gradual and happens over some orders.
+        It is not linearly distributed across all orders but thats the best known way to do it for training the model.
+        :param df_dto: Dataframe containing Features of the order info
+        :return: list containing dataframes with redistributed double orders
+        '''
         df_cust_ts = df_dto.groupby('DeliveryCustomerAccountKey')
         ls_1 = []
         i=0

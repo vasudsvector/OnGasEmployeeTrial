@@ -5,25 +5,40 @@ import read_filter as rf
 
 
 class Customers():
+    '''
+    Class for daily consumption prediction
+    '''
     def __init__(self, custids, df_coeffs, bins):
         self.custids = custids
         self.coeffs = self.fetch_coeff(df_coeffs, custids)
         self.bins = bins
 
     def fetch_coeff(self, df_coeffs, custids):
-        if 'Customers' in df_coeffs.columns:
+        '''
+        This fetches the coefficient for the run. It is executed as and when the class is instantiated
+        :param df_coeffs: Dataframe containing coefficients for each customer by temperature bins
+        :param custids: Customers for whom the run needs to be executed
+        :return:
+        '''
+        if 'Customers' in df_coeffs.columns: # Set 'Customers' column as index if it is not an index already
             df_coeffs.set_index('Customers', inplace=True)
             coeffs = df_coeffs.loc[custids, :]
-        elif 'Customers' in df_coeffs.index.name:
+
+        elif 'Customers' in df_coeffs.index.name: # If the index is 'Customers' subset the coefficients dataframe to only relevant customers
             coeffs = df_coeffs.loc[custids, :]
         else:
             raise ValueError('Customer column missing in Coefficient File')
         return coeffs
 
     def daily_cons(self, temp_today):
-        temp = np.histogram(temp_today, bins=self.bins)[0]
+        '''
+        Predict daily consumption for each customer
+        :param temp_today: Today's average temperature calcualated at peak hours
+        :return: consumption for each customer
+        '''
+        temp = np.histogram(temp_today, bins=self.bins)[0] # Find out which bin today's average temperature falls into
         temp = np.insert(temp, temp.shape[0], np.sum(temp))
-        cons = self.coeffs.dot(temp)
+        cons = self.coeffs.dot(temp) # Dot product of coefficients with temperature for the day
         cons[cons < 0] = 0
         return cons
 

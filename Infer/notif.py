@@ -16,6 +16,12 @@ dbl_ord_qty = 90
 
 
 class FuncNotif():
+    '''
+    This class is the workhorse of the prediction app
+    It does following things
+    1) Reads data generated from last run if it exists
+    2) Fetches temperature data and calculates average for a day at given timeperiods
+    '''
     def __init__(self, custids, last_run_date, run_date, coeff=None, dct_state=None, employeetrial=True,
                  bins=range(5, 25, 3)):
         self.run_date = pd.to_datetime(run_date, format='%d/%m/%Y')
@@ -43,31 +49,48 @@ class FuncNotif():
             self.dct_state['cust_notified_already'] = set()
             self.dct_state['last_run_date'] = self.last_run_date
 
-    def read_state(self, state_loc):
-        df_cumulative_consumption = pd.read_csv(state_loc)
-        df_cumulative_consumption = df_cumulative_consumption.rename({'Unnamed: 0': 'Customer'}, axis=1)
-        df_cumulative_consumption.set_index('Customer', inplace=True)
-        return df_cumulative_consumption
-
     def read_last_run(self, dct_state):
+        '''
+        Read information from state file created during last day execution or from initiated state
+        :param dct_state: dictionary containing state
+        :return: last_run_date - Date of last execution
+        cust_notified_already - list of customers who has been notified already
+        '''
         last_run_date = dct_state['last_run_date']
         cust_notified_already = dct_state['cust_notified_already']
         return last_run_date, cust_notified_already
 
     def fetch_temp(self, df_temp):
+        '''
+        :param df_temp: Temperature data as downloaded from datawarehouse
+        :return: Average temperature values for each day (averaged at peak hours)
+        '''
         df_temp = pt.proc_temperature(df_temp)
         df2, df_rel1 = pt.calc_mean_temp(df_temp, df_ts, morn_peak=morn_peak, eve_peak=eve_peak)
         return df_rel1
 
     def fetch_empty_cust(self, msg, df_cumulative_consumption, daily_cons):
+        '''
+        :param msg: Instantiated Order_Msg class object
+        :param df_cumulative_consumption: Cumulative consumption dataframe for each customer
+        :param daily_cons: Consumption calculated for all customers for today
+        :return:
+        '''
         df_cumulative_consumption.fillna(0, inplace=True)
         df_cumulative_consumption['Cumulative_Consumption'] = df_cumulative_consumption['Cumulative_Consumption'] + \
                                                               daily_cons
-        cust_ready_to_order, cust_emptied_both = msg.categorise_customers(
-            df_cumulative_consumption)  # Find customers who emptied one and both bottles on this day
+        cust_ready_to_order, cust_emptied_both = msg.categorise_customers(df_cumulative_consumption)  # Find customers who emptied one and both bottles on this day
         return cust_ready_to_order, cust_emptied_both, df_cumulative_consumption
 
     def _write_state_out(self, df_cumulative_consumption, rundate, cust_notify_tdy, cust_notified_already):
+        '''
+        State file is formulated and formatted here.
+        :param df_cumulative_consumption: Predicted Cumulative consumption for each customer
+        :param rundate: Date of execution of code
+        :param cust_notify_tdy: Who needs to be notified today
+        :param cust_notified_already: Who has been notified already
+        :return:dct_state to be written out
+        '''
         self.dct_state['Cumulative_Consumption'] = df_cumulative_consumption.to_json()
         ls_notif = [{'Date' : str(rundate), 'Empty_Customers' : list(cust_notify_tdy)}]
         self.dct_state['daily_notifications'].extend(ls_notif)
@@ -75,6 +98,13 @@ class FuncNotif():
         self.dct_state['cust_notify_today'] = list(cust_notify_tdy)
 
     def error_consum(self, disp_weight_rel, df_cumulative_consumption, date1):
+        '''
+        Calculate the error in prediction for today
+        :param disp_weight_rel: For the customers who has had their delivery last day
+        :param df_cumulative_consumption: Cumulative consumption of gas so far from daily prediction since last delivery
+        :param date1: Code executed date
+        :return:
+        '''
         disp_weight_rel = disp_weight_rel.rename({'DispensedWeight': 'Cumulative_Consumption'}, axis=1)
         df_3 = pd.DataFrame()
         df_3['pred_cons'] = (df_cumulative_consumption.loc[disp_weight_rel.index, 'Cumulative_Consumption'])
@@ -84,22 +114,32 @@ class FuncNotif():
         self.df_1 = self.df_1.append(df_3)
 
     def notif(self, date1, cust_ent_date, custids, mean_temp, df_order, dct_state, cons):
-        rundate = date1.date()  # (date.today()-timedelta(1))
-        last_run_date, cust_notified_already = self.read_last_run(dct_state)  # to be checked
+        '''
+
+        :param date1: Date of the algorithm execution, this method is called once for each day
+        :param cust_ent_date: Dataframe containing entry date for each customer
+        :param custids: Customer IDs
+        :param mean_temp: Average temperature of the region at peak hours (one average per day)
+        :param df_order: Order Data
+        :param dct_state: Dictionary containing state information like last_run_date, notified_customers, customers to be notified by date etc
+        :param cons: Dataframe containing predicted consumption by day for each customer
+        :return: cons and updated dct_state
+        '''
+        rundate = date1.date() # date of execution of this method
+        last_run_date, cust_notified_already = self.read_last_run(dct_state) # Collect information from previous run
 
         # Estimate the daily consumption for date1 for all relevant customers
         pres_cons = cust_ent_date.loc[cust_ent_date['Join_Date'] <= pd.Timestamp(rundate)].index.tolist()
-        rel_cust_run = [cust for cust in pres_cons if cust in custids]
+        rel_cust_run = [cust for cust in pres_cons if cust in custids] # Find the customers for whom the consumption need to be calculated - some customers might not have been part of OnGas by rundate.
+        customer = Customers(rel_cust_run, self.df_coeffs, self.bins) # Instantiate customers class
+        runday_cons = customer.daily_cons(mean_temp) # Calculate daily consumption
+        cons.loc[runday_cons.index, rundate] = runday_cons # Append the calculated consumption to cons dataframe
 
-        customer = Customers(rel_cust_run, self.df_coeffs, self.bins)
 
-        runday_cons = customer.daily_cons(mean_temp)
+        dct_cumulative_consumption = json.loads(dct_state['Cumulative_Consumption']) # Load cumulative consumption from state dictionary for each customer
+        df_cumulative_consumption = pd.DataFrame(dct_cumulative_consumption) # Convert it to dataframe
+        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(int)  # JSON DUMPED to str, convert it to int
 
-        cons.loc[runday_cons.index, rundate] = runday_cons
-
-        dct_cumulative_consumption = json.loads(dct_state['Cumulative_Consumption'])
-        df_cumulative_consumption = pd.DataFrame(dct_cumulative_consumption)
-        df_cumulative_consumption.index = df_cumulative_consumption.index.astype(int)  # JSON DUMPED to str
         msg = Order_Msg(run_date=rundate, last_run_date=last_run_date, ord_qty=None, dbl_ord_qty=None)
         cust_ready_to_order, cust_emptied_both, df_cumulative_consumption = self.fetch_empty_cust(msg,
                                                                                                   df_cumulative_consumption,
@@ -116,35 +156,38 @@ class FuncNotif():
         # cust_due_notif -
 
         # Who should be notified today?
-        cust_notify_tdy = cust_due_notif - set(cust_notified_already)  # Exclude already notified customers
+        cust_notify_tdy = cust_due_notif - set(cust_notified_already)  # Exclude already notified customers from previous runs
         cust_notified_already = set(cust_notified_already)
-        cust_notified_already.update(cust_ready_to_order)
+        cust_notified_already.update(cust_ready_to_order) # Update the notified customers list for writing it out into state after the run
 
         check = any(item in custids for item in disp_weight.index) and (disp_weight['DispensedWeight'].sum() > 0)
-        if check:
+
+        if check: # If any customers have received deliveries yesterday, calculate error in prediction
             disp_weight_rel = pd.DataFrame(disp_weight.loc[disp_weight.index.isin(custids), 'DispensedWeight'])
             self.error_consum(disp_weight_rel, df_cumulative_consumption, rundate)
 
-        cust_deliv_last_day = set(disp_weight.index)
-        cust_notified_already = (cust_notified_already - cust_deliv_last_day)
+        cust_deliv_last_day = set(disp_weight.index) # Find who got their deliveries during last run
+        cust_notified_already = (cust_notified_already - cust_deliv_last_day) # Edit the customers notified already section to ensure we remove those who received their cylinders
 
-        if not (disp_weight.empty) and any(item in custids for item in cust_deliv_last_day):
+        if not (disp_weight.empty) and any(item in custids for item in cust_deliv_last_day): # Checkpoint to make sure the program doesnt hit an error
             disp_weight['Cumulative_Consumption'] = disp_weight.loc[disp_weight.index.isin(custids), :]
             df_cumulative_consumption.fillna(0, inplace=True)
-            if not self.trial:
+            if not self.trial: # During non-trial, both cylinders wont be replaced. We need to make sure the predicted consumption if more than 45kg gets into second bottle
+                # Adjust the cumulative consumption - take away the dispensed weight from cumulative consumption.
                 df_cumulative_consumption.loc[
                     df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = \
                     df_cumulative_consumption.loc[
                         df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] - \
                     disp_weight.loc[disp_weight.index.isin(cust_deliv_last_day), 'Cumulative_Consumption']
-            elif self.trial:
+            elif self.trial: # During trial, both cylinders were replaced
+                # Cumulation is reset to zero
                 df_cumulative_consumption.loc[
                     df_cumulative_consumption.index.isin(cust_deliv_last_day), 'Cumulative_Consumption'] = 0
 
-        # TODO New module or object needs to be created after cumulative consumption calculation
         df_cumulative_consumption['Cumulative_Consumption'] = df_cumulative_consumption[
-            'Cumulative_Consumption'].clip(lower=0, upper=dbl_ord_qty)
+            'Cumulative_Consumption'].clip(lower=0, upper=dbl_ord_qty) # If this value is negative, make it zero and if it is more than double cylinder quantity, limit it to two cylinder quantity
 
+        # Write the outputs to files
         self._write_state_out(df_cumulative_consumption, rundate, cust_notify_tdy, cust_notified_already)
         return cons, self.dct_state
 

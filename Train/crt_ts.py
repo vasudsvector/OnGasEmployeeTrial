@@ -2,6 +2,10 @@ import proc_temperature as pt
 import pandas as pd
 
 def calc_ts_feat(df_dto):
+    '''
+    :param df_dto:Feature dataframe
+    :return: Feature dataframe converted into a timeseries
+    '''
     df_ts = df_dto.groupby(['DeliveryCustomerAccountKey']).apply(lambda x: create_time_series(x))
     df_ts = df_ts.reset_index().drop(['level_1'], axis=1)
     df_ts = pt.cum_hd_cd(df_ts)
