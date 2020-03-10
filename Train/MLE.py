@@ -32,6 +32,11 @@ class MLE:
         self.cols = cols
 
     def hist_grp(self, x):
+        '''
+        Calculates histogram for each bin between the days in between orders
+        :param x:
+        :return: Temperature Histogram Bins
+        '''
         y = x['Mean_Temp']
         hist1 = np.histogram(y[np.isfinite(y)], bins=self.binsize)[0]  # , density=True
         hist1 = hist1  # /days
@@ -39,6 +44,7 @@ class MLE:
         return hist1
 
     def crt_tar(self, x):
+        '''Creates target column for training. The target column is dispensed weight. The feature column is number of days in each bin'''
         hist1 = self.hist_grp(x)
         days = x['Mean_Temp'].count()
         df = pd.DataFrame(hist1).T

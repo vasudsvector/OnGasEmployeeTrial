@@ -35,7 +35,7 @@ def ml(feat):
     for cust in customers: # For each customer train a model and append it to coefficients dataframe
         df_cust = df_feat.loc[df_feat['Customer']==cust,:]
         lin = Lasso(alpha=0.0001, precompute=True, max_iter=1000,
-                    positive=True, random_state=9999, selection='random', fit_intercept=False)
+                    positive=True, random_state=9999, selection='random', fit_intercept=False) # Lasso has ability to keep regression coefficients positive and small alpha makes it behave like linear regressor
         lin.fit(df_cust.drop(['Weight1', 'Customer'], 1), df_cust['Weight1'])
         df_coef1 = pd.DataFrame(lin.coef_, index=coef_cols).T
         df_coef1['Customers'] = cust

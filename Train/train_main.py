@@ -65,8 +65,6 @@ df_train, df_rel1 = pt.calc_mean_temp(df_temp, df_ts, morn_peak=morn_peak, eve_p
 mle = mle.MLE(binsize=bins, cols=cols)
 feat = mle.calc_ml_feat(df_train)
 
-# cust_coeff = feat.groupby('Customer').apply(lambda x: mle.linreg(x, tar_column='Weight1'))
-# cust_coeff = pd.DataFrame(cust_coeff.values.tolist(), index=cust_coeff.index)
 cust_coeff = ml.ml(feat)
 cust_coeff.set_index('Customers', inplace=True)
 cust_coeff.to_csv(r"Cust_coeff2.csv")
